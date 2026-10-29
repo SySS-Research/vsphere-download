@@ -1,0 +1,51 @@
+[project]
+name = "vsphere-download"
+dynamic = ["version"]
+description = "Copy files and directories out of Windows VMs on vSphere hypervisors"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dissect-ntfs>=3.16",
+    "dissect-util>=3.24",
+    "dissect-volume>=3.18",
+    "pyvmomi>=9.1.1.0",
+]
+
+[project.scripts]
+vsphere-download = "vsphere_download.cli:main"
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+fallback_version = "0.0.0"
+
+[tool.uv]
+cache-keys = [{ file = "pyproject.toml" }, { git = { commit = true, tags = true } }]
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.0",
+    "pytest>=8.0.0",
+    "ruff>=0.16.10",
+]
+
+[tool.mypy]
+files = ["src"]
+strict = true
+sqlite_cache = false
+untyped_calls_exclude = ["pyVim", "pyVmomi"]
+
+[[tool.mypy.overrides]]
+module = ["dissect.*"]
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF"]
